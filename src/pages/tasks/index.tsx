@@ -1,12 +1,19 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { queryClient } from "../../main";
 import { instance } from "../../utils/axios";
 import { useQuery, useMutation } from "react-query";
 import { toast } from "react-toastify";
 import { formatDate } from "../../utils/formatDate";
+import { useEffect } from "react";
 
 export function Tasks() {
   const token = localStorage.getItem("node-token");
+  const navigate = useNavigate();
+
+  //redirect to login page
+  useEffect(() => {
+    if (!token) navigate("/login");
+  }, []);
 
   const req = () => {
     return instance.get("tasks").then((res) => res.data);
