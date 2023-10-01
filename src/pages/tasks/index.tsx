@@ -3,6 +3,7 @@ import { queryClient } from "../../main";
 import { instance } from "../../utils/axios";
 import { useQuery, useMutation } from "react-query";
 import { toast } from "react-toastify";
+import { formatDate } from "../../utils/formatDate";
 
 export function Tasks() {
   const token = localStorage.getItem("node-token");
@@ -67,7 +68,7 @@ export function Tasks() {
                   {task.description}
                 </td>
                 <td className="px-6 py-4 whitespace-no-wrap text-sm leading-5 text-gray-900">
-                  {task.deadline}
+                  {formatDate(task.deadline)}
                 </td>
                 {token ? (
                   <td className="px-6 py-4 whitespace-no-wrap text-sm leading-5 text-gray-900">

@@ -1,10 +1,12 @@
 import React from "react";
-import { useForm, SubmitHandler } from "react-hook-form";
+import { Controller, useForm, SubmitHandler } from "react-hook-form";
 import { instance } from "../../utils/axios";
 import { useMutation } from "react-query";
 import { useNavigate } from "react-router-dom"; // Import useHistory directly
 import { useParams } from "react-router-dom";
 import { toast } from "react-toastify";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 
 export interface FormData {
   title: string;
@@ -14,9 +16,10 @@ export interface FormData {
 
 export const CreateTask: React.FC = () => {
   const { id } = useParams<{ id: string }>();
-  const navigate = useNavigate(); // Use useNavigate hook
+  const navigate = useNavigate();
 
   const {
+    control,
     register,
     handleSubmit,
     formState: { errors },
@@ -89,48 +92,57 @@ export const CreateTask: React.FC = () => {
           />
           <p className="text-red-500 text-xs mt-1">{errors.title?.message}</p>
         </div>
-
         <div className="mb-4">
-          <label
-            htmlFor="description"
-            className="block text-gray-700 font-bold"
-          >
-            Description
-          </label>
-          <textarea
-            id="description"
-            {...register("description", {
-              required: "description is required",
-              minLength: {
-                value: 6,
-                message: "description must be at least 6 characters",
-              },
-            })}
-            className="border border-gray-300 rounded-md px-3 py-2 mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm"
-          />
-          <p className="text-red-500 text-xs mt-1">
-            {errors.description?.message}
-          </p>
-        </div>
-        <div className="mb-4">
-          <label htmlFor="deadline" className="block text-gray-700 font-bold">
-            Deadline
-          </label>
-          <input
-            type="deadline"
-            id="deadline"
-            {...register("deadline", {
-              required: "deadline is required",
-              minLength: {
-                value: 6,
-                message: "deadline must be at least 6 characters",
-              },
-            })}
-            className="border border-gray-300 rounded-md px-3 py-2 mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm"
-          />
-          <p className="text-red-500 text-xs mt-1">
-            {errors.deadline?.message}
-          </p>
+          <div className="flex  justify-between ">
+            <div className="w-10/12 mr-2">
+              <label
+                htmlFor="description"
+                className="block text-gray-700 font-bold"
+              >
+                Description
+              </label>
+              <textarea
+                rows={11}
+                id="description"
+                {...register("description", {
+                  required: "description is required",
+                  minLength: {
+                    value: 6,
+                    message: "description must be at least 6 characters",
+                  },
+                })}
+                className="border border-gray-300 rounded-md px-3 py-2 mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full h-[200px] sm:h-auto shadow-sm sm:text-sm"
+              />
+              <p className="text-red-500 text-xs mt-1">
+                {errors.description?.message}
+              </p>
+            </div>
+            <div className="w-4/12">
+              <label
+                htmlFor="deadline"
+                className="block text-gray-700 font-bold"
+              >
+                Deadline
+              </label>
+              <Controller
+                name="deadline"
+                control={control}
+                rules={{ required: "Deadline is required" }}
+                render={({ field }) => (
+                  <DatePicker
+                    inline
+                    onChange={(date) => field.onChange(date)}
+                    dateFormat="yyyy-MM-dd"
+                    placeholderText="Select a date"
+                    className="h-[200px]"
+                  />
+                )}
+              />
+              <p className="text-red-500 text-xs mt-1">
+                {errors.deadline?.message}
+              </p>
+            </div>
+          </div>
         </div>
 
         <div className="mt-6">
