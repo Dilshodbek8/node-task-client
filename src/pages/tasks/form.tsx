@@ -22,6 +22,7 @@ export const CreateTask: React.FC = () => {
     formState: { errors },
     setValue,
   } = useForm<FormData>();
+
   const createTask = async (formData: FormData) => {
     try {
       const response = await instance.post("/tasks", formData);
@@ -30,6 +31,7 @@ export const CreateTask: React.FC = () => {
       throw new Error("creating failed");
     }
   };
+
   const updateTask = async (formData: FormData) => {
     try {
       const response = await instance.put(`/tasks/${id}`, formData);
@@ -56,6 +58,8 @@ export const CreateTask: React.FC = () => {
   const onSubmit: SubmitHandler<FormData> = (data) => {
     mutate(data);
   };
+
+  // getting old data
   React.useEffect(() => {
     if (id) {
       const fetchTaskDetails = async () => {

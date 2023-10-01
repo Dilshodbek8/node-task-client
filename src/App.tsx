@@ -8,12 +8,13 @@ import { useEffect } from "react";
 function App() {
   const navigate = useNavigate();
 
+  //redirect to tasks page
   useEffect(() => {
     navigate("/tasks");
   }, []);
   return (
     <div className="flex flex-col items-center">
-      <ToastContainer />
+      <ToastContainer position="top-center" />
       <NavBar />
       <Outlet />
     </div>

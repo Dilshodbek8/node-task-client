@@ -5,10 +5,14 @@ import { useQuery, useMutation } from "react-query";
 import { toast } from "react-toastify";
 
 export function Tasks() {
+  const token = localStorage.getItem("node-token");
+
   const req = () => {
     return instance.get("tasks").then((res) => res.data);
   };
+
   const { data } = useQuery("todos", req);
+
   const deleteTask = async (taskId: any) => {
     await instance.delete(`tasks/${taskId}`);
   };
@@ -17,18 +21,23 @@ export function Tasks() {
       queryClient.invalidateQueries("todos");
       toast.success("Deleted successfully");
     },
+    onError: () => {
+      toast.error("Authorize");
+    },
   });
 
   return (
     <div className="w-9/12">
       <div className="flex items-center justify-between my-3">
         <h1 className="text-2xl font-semibold mb-4">Tasks</h1>
-        <Link
-          to={"/createtask"}
-          className="bg-indigo-500 text-white py-2 px-4 rounded-md hover:bg-indigo-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-        >
-          Create Task
-        </Link>
+        {token && (
+          <Link
+            to={"/createtask"}
+            className="bg-indigo-500 text-white py-2 px-4 rounded-md hover:bg-indigo-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+          >
+            Create Task
+          </Link>
+        )}
       </div>
       <div className="mt-4">
         <table className="min-w-full divide-y divide-gray-200">
@@ -60,22 +69,33 @@ export function Tasks() {
                 <td className="px-6 py-4 whitespace-no-wrap text-sm leading-5 text-gray-900">
                   {task.deadline}
                 </td>
-                <td className="px-6 py-4 whitespace-no-wrap text-sm leading-5 text-gray-900">
-                  <button
-                    onClick={() => {
-                      deleteTaskMutation.mutate(task._id);
-                    }}
-                    className="text-red-500 hover:text-red-700"
-                  >
-                    Delete
-                  </button>
-                  <Link
-                    to={`/createtask/${task._id}`}
-                    className="ml-4 text-indigo-500 hover:text-indigo-700"
-                  >
-                    Update
-                  </Link>
-                </td>
+                {token ? (
+                  <td className="px-6 py-4 whitespace-no-wrap text-sm leading-5 text-gray-900">
+                    <button
+                      onClick={() => {
+                        deleteTaskMutation.mutate(task._id);
+                      }}
+                      className="text-red-500 hover:text-red-700"
+                    >
+                      Delete
+                    </button>
+                    <Link
+                      to={`/createtask/${task._id}`}
+                      className="ml-4 text-indigo-500 hover:text-indigo-700"
+                    >
+                      Update
+                    </Link>
+                  </td>
+                ) : (
+                  <td className="px-6 py-4 whitespace-no-wrap text-sm leading-5 text-gray-900">
+                    <Link
+                      to={`/login`}
+                      className="ml-4 text-indigo-500 hover:text-indigo-700"
+                    >
+                      Log in
+                    </Link>{" "}
+                  </td>
+                )}
               </tr>
             ))}
           </tbody>
