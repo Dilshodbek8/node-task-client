@@ -11,7 +11,7 @@ interface FormData {
 }
 
 export const Login: React.FC = () => {
-  const navigate = useNavigate(); // Use useNavigate hook
+  const navigate = useNavigate();  
 
   const {
     register,
